@@ -1,5 +1,6 @@
 $(document).ready(function(){
-    $.get($('.selectpicker').value+"/fieldset");
+    temp = $('.selectpicker').siblings().attr("title");
+    $.get(temp+"/fieldset");
     $('.selectpicker').on('change', function(e){
         temp = this.value;
         console.log(temp);

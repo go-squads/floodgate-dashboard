@@ -8,7 +8,7 @@
         <div class="d-flex justify-content-center">
             <select id="measurement-search" class="selectpicker" data-live-search="true" title="choose the measurement you want">
                 <% @topics["values"].each do |each|%>
-                    <option><a><%= link_to each["name"].html_safe, remote: true%></a></option>
+                    <option selected="selected"><a><%= link_to each["name"].html_safe, remote: true%></a></option>
                 <%end%>
             </select>
         </div>

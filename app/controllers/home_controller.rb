@@ -38,7 +38,20 @@ class HomeController < ApplicationController
     column_names.each do |each|
       string_select_builder = string_select_builder +','+ 'sum("'+each+'") AS "'+ each + '"' 
     end
-    cmd = 'SELECT '+string_select_builder[1...string_select_builder.length]+' FROM "analyticsKafkaDB"."autogen"."'+params[:measurement]+'" where time > now() - '+params[:timerange]+' group by time(1h) FILL(0)'
+    interval = ""
+    case params[:timerange]
+    when "1d"
+      interval = "2h"
+    when "1w"
+      interval = "1d"
+    when "1m"
+      interval = "2d"
+    when "1y"
+      interval = "1m"
+    else
+      interval = "1h"
+    end
+    cmd = 'SELECT '+string_select_builder[1...string_select_builder.length]+' FROM "analyticsKafkaDB"."autogen"."'+params[:measurement]+'" where time > now() - '+params[:timerange]+' group by time('+interval+') FILL(0)'
     puts "command: "+cmd
     @response = dbclient.query (cmd)
     # puts "RESPONSE: "+@response[0]["values"].to_s
