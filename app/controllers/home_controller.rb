@@ -21,7 +21,12 @@ class HomeController < ApplicationController
     topic_list = topic_list_query[0]
   end
 
-  
-
+  def get_fieldset
+    dbclient = connect_to_influx
+    measurement = params[:measurement]
+    puts "field key for :"+measurement
+    @response = dbclient.query('SHOW FIELD KEYS FROM "'+ measurement+'"')
+    puts @response.to_s
+  end
   
 end
