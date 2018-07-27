@@ -3,7 +3,6 @@ class HomeController < ApplicationController
     
   def index
     @topics = get_topics
-    puts @topics.to_s
   end
 
   def connect_to_influx
@@ -26,6 +25,10 @@ class HomeController < ApplicationController
     measurement = params[:measurement]
     response = dbclient.query('SHOW FIELD KEYS FROM "'+ measurement+'"')
     @fieldset = response[0]
+    respond_to do |format|
+      format.js
+    end
+    @fieldset
   end
   
 end

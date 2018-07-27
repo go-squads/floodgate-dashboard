@@ -1,0 +1,13 @@
+
+$(document).ready(function()    {
+    $('#field_list').html("<%=escape_javascript render(:partial => 'get_fieldset') %>");
+    $('#queryrun').click(function(event){
+        event.preventDefault();
+        var checked = $('.form-check-input:checkbox:checked');
+        var fieldvalue = "";
+        $.each(checked, function( index, value ) {
+            fieldvalue +=","+value["id"];
+        });
+    });
+        
+});

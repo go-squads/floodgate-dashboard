@@ -1,20 +1,18 @@
-<h1> This is the home page </h1>
-<!--- Render here !-->
-<div id="topics_list" class="home-content">
-    <div id="measurements">
+<% content_for :index do %>    
+    <div id="topics_list" class="home-content">
         <div class="d-flex justify-content-center">
             <h2>
                 <%= @topics["name"] %>
             </h2>
         </div>
         <div class="d-flex justify-content-center">
-            <select class="selectpicker" data-live-search="true">
+            <select id="measurement-search" class="selectpicker" data-live-search="true">
                 <% @topics["values"].each do |each|%>
                     <option><a><%= link_to each["name"].html_safe, remote: true%></a></option>
                 <%end%>
             </select>
         </div>
     </div>
-</div>
-<div id="field_list" class="home-content"></div>
-<div id="time_range" class="home-content"></div>
+    <div id="field_list" class="home-content"></div>
+    <div id="time_range" class="home-content"></div>
+<% end %>
