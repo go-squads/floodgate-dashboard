@@ -23,11 +23,15 @@
   </head>
 
   <body>
-    <%= render 'layouts/header' %>
+    <div id="header">
+      <%= render 'layouts/header' %>
+    </div>
     <div class="container">
       <%= yield :index %>
     </div>
-    <%= render 'layouts/footer' %>
+    <div id="footer" class="d-flex justify-content-center">
+      <%= render 'layouts/footer' %>
+    </div>
   </body>
 
 </html>
