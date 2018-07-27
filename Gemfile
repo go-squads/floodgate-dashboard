@@ -64,3 +64,4 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'influxdb'
 gem 'jquery-rails'
+gem 'lazy_high_charts'

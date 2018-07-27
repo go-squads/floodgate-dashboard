@@ -1,0 +1,5 @@
+$(document).ready(function()    {
+    $('#result').html("<%=escape_javascript render(:partial => 'visualize') %>");
+    var new_position = $('#result').offset();
+    $('html, body').stop().animate({ scrollTop: new_position.top }, 500);
+});

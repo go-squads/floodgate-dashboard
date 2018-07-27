@@ -1,6 +1,7 @@
 
 $(document).ready(function()    {
     $('#field_list').html("<%=escape_javascript render(:partial => 'get_fieldset') %>");
+    console.log("get field");
     $('#queryrun').click(function(event){
         event.preventDefault();
         var checked = $('.form-check-input:checkbox:checked');
@@ -8,6 +9,7 @@ $(document).ready(function()    {
         $.each(checked, function( index, value ) {
             fieldvalue +=","+value["id"];
         });
+        $(this).attr("href", $(this).attr('href')+"&field="+ fieldvalue.substring(1)+ "&timerange="+ $('#sel1').val())
     });
         
 });

@@ -26,5 +26,5 @@
         </div>
     </div>
     <div class="col-md-12 text-center">
-        <%= link_to 'Get visualization', "", remote: true, id: "queryrun", class: "btn btn-primary"%>
+        <%= link_to 'Get visualization', home_visualize_path(:measurement => @fieldset["name"]), remote: true, id: "queryrun", class: "btn btn-primary"%>
     </div>

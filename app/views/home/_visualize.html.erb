@@ -1,0 +1,6 @@
+<% if @response.length != 0 %>
+    <%= high_chart_globals(@chart_globals) %>
+    <%= high_chart("some_id", @chart) %>
+<% else %>
+    <p> Data cant be found, try another time range </p>
+<% end %>

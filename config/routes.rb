@@ -3,4 +3,6 @@ Rails.application.routes.draw do
   root 'home#index'
 
   get ':measurement/fieldset' => 'home#get_fieldset'
+
+  get 'home/visualize'
 end
