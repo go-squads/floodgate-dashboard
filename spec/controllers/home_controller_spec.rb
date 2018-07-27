@@ -23,5 +23,13 @@ RSpec.describe HomeController, type: :controller do
     end
   end
 
+  describe "#get_fieldset" do
+    it "can get field lists properly" do
+        test = HomeController.new
+        controller.params = ActionController::Parameters.new({ measurement: "go-wednesday_logs" })
+        expect(controller.send(:get_fieldset)).not_to eq(nil)
+    end
+  end
+
 
 end
