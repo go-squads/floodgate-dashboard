@@ -2,5 +2,10 @@
     <%= high_chart_globals(@chart_globals) %>
     <%= high_chart("some_id", @chart) %>
 <% else %>
-    <p> Data cant be found, try another time range </p>
+    <div class="text-center">
+        <p>
+            <h5> Data can't be found for the specified time range</h5>
+            <h5> Please try another time range </h5>
+        </p>
+    </div>
 <% end %>

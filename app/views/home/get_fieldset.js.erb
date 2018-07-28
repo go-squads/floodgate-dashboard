@@ -1,6 +1,6 @@
 
 $(document).ready(function()    {
-    $('#field_list').html("<%=escape_javascript render(:partial => 'get_fieldset') %>");
+     $('#field_list').html("<%=j render(:partial => 'get_fieldset') %>");
     console.log("get field");
     $('#queryrun').click(function(event){
         event.preventDefault();
@@ -11,5 +11,4 @@ $(document).ready(function()    {
         });
         $(this).attr("href", $(this).attr('href')+"&field="+ fieldvalue.substring(1)+ "&timerange="+ $('#sel1').val())
     });
-        
 });

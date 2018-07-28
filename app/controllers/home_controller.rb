@@ -3,6 +3,8 @@ class HomeController < ApplicationController
     
   def index
     @topics = get_topics
+    @default_path = 'default'
+    @normal_path = 'get_fieldset'
   end
 
   def connect_to_influx
