@@ -53,27 +53,28 @@ class HomeController < ApplicationController
     end
     cmd = 'SELECT '+string_select_builder[1...string_select_builder.length]+' FROM "analyticsKafkaDB"."autogen"."'+params[:measurement]+'" where time > now() - '+params[:timerange]+' group by time('+interval+') FILL(0)'
     puts "command: "+cmd
-    @response = dbclient.query (cmd)
-    # puts "RESPONSE: "+@response[0]["values"].to_s
-    if @response.length != 0
-      data_to_visualize = Hash.new()
-      @response[0]["values"].each {
-        |data|
-        puts data
-        data.each {
-          |key,value|
-          puts "Data to Put: "+key + " "+value.to_s
-          if (!data_to_visualize[key]) 
-            data_to_visualize[key] = Array.new
-          end
-          if (key == "time")
-            value = DateTime.strptime(value).new_offset(DateTime.now.offset)
-          end
-          data_to_visualize[key].push(value)
-        }
-        puts "datatovis:" + data_to_visualize.to_s
-      }
-      puts "data to vis: "+data_to_visualize.to_s
+    @response = dbclient.query(cmd)
+    data_to_visualize = map_timeseries(@response)
+    puts "RESPONSE: "+@response[0]["values"].to_s
+    # if @response.length != 0
+    #   data_to_visualize = Hash.new()
+    #   @response[0]["values"].each {
+    #     |data|
+    #     puts data
+    #     data.each {
+    #       |key,value|
+    #       puts "Data to Put: "+key + " "+value.to_s
+    #       if (!data_to_visualize[key]) 
+    #         data_to_visualize[key] = Array.new
+    #       end
+    #       if (key == "time")
+    #         value = DateTime.strptime(value).new_offset(DateTime.now.offset)
+    #       end
+    #       data_to_visualize[key].push(value)
+    #     }
+    #     puts "datatovis:" + data_to_visualize.to_s
+    #   }
+    #   puts "data to vis: "+data_to_visualize.to_s
       # visualize(column_names, params[:measurement], data_to_visualize)
 
       @chart = LazyHighCharts::HighChart.new('graph') do |f|
@@ -116,4 +117,29 @@ class HomeController < ApplicationController
       end
     end
   end  
-end
+
+  def map_timeseries(query_response)
+    if query_response.length != 0 
+      keyed_data = Hash.new()
+      query_response[0]["values"].each {
+        |data|
+        data.each {
+          |key,value|
+          puts "Data to Put: "+key + " "+value.to_s
+          if (!keyed_data[key]) 
+            keyed_data[key] = Array.new
+          end
+             
+          if (key == "time")
+            value = DateTime.strptime(value).new_offset(DateTime.now.offset)
+          end
+        
+          keyed_data[key].push(value)
+        }
+        puts "datatovis:" + keyed_data.to_s
+      }
+    end   
+
+    return keyed_data
+  end
+
