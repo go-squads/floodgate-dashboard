@@ -5,4 +5,6 @@ Rails.application.routes.draw do
   get ':measurement/fieldset' => 'home#get_fieldset'
 
   get 'home/visualize'
+
+  get 'home/forecast'
 end

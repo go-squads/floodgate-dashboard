@@ -31,5 +31,28 @@ RSpec.describe HomeController, type: :controller do
     end
   end
 
+  describe "#map_timeseries" do
+    it "will return nil if the response is nil" do
+        test = HomeController.new
+        testArr = Array.new
+        expect(test.map_timeseries(testArr)).to eq(nil)
+    end
+
+    it "will return a properly mapped list" do
+        test = HomeController.new
+        testResponse = Array.new
+        testMap = Hash.new
+        testValueArr = Array.new
+        testMeasureHash = Hash.new
+        testMeasureArr = Array.new
+        testMeasureArr.push(10)
+        testMeasureHash["test"] = testMeasureArr
+        testValueArr.push(testMeasureHash)
+        testMap["values"] = testValueArr
+        testResponse.push(testMap)
+        expect(test.map_timeseries(testResponse)).not_to eq(nil)
+    end
+  end
+
 
 end

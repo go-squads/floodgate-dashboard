@@ -28,3 +28,6 @@
     <div class="col-md-12 text-center">
         <%= link_to 'Get visualization', home_visualize_path(:measurement => @fieldset["name"]), remote: true, id: "queryrun", class: "btn btn-primary"%>
     </div>
+    <div class="col-md-12 stext-center">
+        <%= link_to 'Get Forecast for Next Week', home_forecast_path, remote: true, id: "dataforecast", class: "btn btn-primary" %>
+    </div>
