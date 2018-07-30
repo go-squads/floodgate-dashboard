@@ -1,11 +1,12 @@
 require 'rails_helper'
+require 'date'
 
 RSpec.describe HomeController, type: :controller do
 
   describe "GET #index" do
     it "returns http success" do
       get :index
-      expect(response).to have_http_status(:success)
+      expect(response).to have_http_status(200)
     end
   end
 
@@ -26,8 +27,11 @@ RSpec.describe HomeController, type: :controller do
   describe "#get_fieldset" do
     it "can get field lists properly" do
         test = HomeController.new
-        controller.params = ActionController::Parameters.new({ measurement: "go-wednesday_logs" })
-        expect(controller.send(:get_fieldset)).not_to eq(nil)
+        # controller.params = ActionController::Parameters.new({ measurement: "go-wednesday_logs" })
+        # expect(controller.send(:get_fieldset)).not_to eq(nil)
+
+        get :get_fieldset, params: { measurement: "go-wednesday_logs" }, xhr: true
+        expect(response).to have_http_status(200)
     end
   end
 
@@ -47,6 +51,7 @@ RSpec.describe HomeController, type: :controller do
         testMeasureArr = Array.new
         testMeasureArr.push(10)
         testMeasureHash["test"] = testMeasureArr
+        testMeasureHash["time"] = DateTime.current.to_s
         testValueArr.push(testMeasureHash)
         testMap["values"] = testValueArr
         testResponse.push(testMap)
@@ -54,5 +59,22 @@ RSpec.describe HomeController, type: :controller do
     end
   end
 
-
+  describe "#interval_based_on_timerange" do
+    test = HomeController.new
+    it "returns 2h interval when the timerange is 1d" do
+      expect(test.interval_based_on_timerange("1d")).to eq("2h")
+    end
+    it "returns 1d interval when the timerange is 1w" do
+      expect(test.interval_based_on_timerange("1w")).to eq("1d")
+    end
+    it "returns 2d interval when the timerange is 1m" do
+      expect(test.interval_based_on_timerange("1m")).to eq("2d")
+    end
+    it "returns 1m interval when the timerange is 1y" do
+      expect(test.interval_based_on_timerange("1y")).to eq("1m")
+    end
+    it "returns 1h interval when the timerange is not listed" do
+      expect(test.interval_based_on_timerange("12h")).to eq("1h")
+    end
+  end
 end
