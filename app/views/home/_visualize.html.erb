@@ -1,15 +1,6 @@
 <% if @response.length != 0 %>
-    <div class="d-flex">
-        <div class="d-flex justify-content-around">
-            <%= high_chart_globals(@chart_globals) %>
-            <%= high_chart("some_id", @chart) %>
-        </div>
-        <div class="d-flex justify-content-around">
-            <div class="col-md-12 stext-center">
-                <%= link_to 'Get Forecast for Next Week', home_forecast_path, remote: true, id: "dataforecast", class: "btn btn-primary" %>
-            </div>
-        </div>
-    </div>
+    <%= high_chart_globals(@chart_globals) %>
+    <%= high_chart("some_id", @chart) %>
 <% else %>
     <div class="text-center">
         <p>
