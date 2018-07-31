@@ -10,5 +10,8 @@ $(document).ready(function()    {
             fieldvalue +=","+value["id"];
         });
         $(this).attr("href", $(this).attr('href')+"&field="+ fieldvalue.substring(1)+ "&timerange="+ $('#sel1').val())
+        setInterval(function() {
+        $.get($('#queryrun').attr('href'));
+    }, 5000);
     });
 });
