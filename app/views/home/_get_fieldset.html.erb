@@ -3,6 +3,7 @@
         <%= @fieldset["name"]+"' List of Fields:" %>
     </h2>
 </div>
+
 <div class="d-flex justify-content-center">
     <div class="field-list">
         <% @fieldset["values"].each do |each|%>
@@ -13,6 +14,7 @@
         <%end%>
     </div>
 </div>
+
 <div class="d-flex justify-content-center">
     <div class="form-group justify-content-center">
         <label for="sel1">Select Data Time-Range:</label>
@@ -25,6 +27,7 @@
         </select>
     </div>
 </div>
+
 <div class="col-md-12 text-center">
     <%= link_to 'Get visualization', home_visualize_path(:measurement => @fieldset["name"]), remote: true, id: "queryrun", class: "btn btn-primary"%>
 </div>

@@ -1,6 +1,6 @@
 
 $(document).ready(function()    {
-     $('#field_list').html("<%=j render(:partial => 'get_fieldset') %>");
+    $('#field_list').html("<%=j render(:partial => 'get_fieldset') %>");
     console.log("get field");
     var refresher;
     $('#queryrun').click(function(event){
@@ -17,7 +17,5 @@ $(document).ready(function()    {
                         $.get($('#queryrun').attr('href'));
                     }, 5000);
         setTimeout(refresher);
-        
-        
     });
 });

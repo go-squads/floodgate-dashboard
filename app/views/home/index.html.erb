@@ -1,17 +1,23 @@
 <% content_for :index do %>    
     <div id="topics_list" class="home-content">
-        <div class="d-flex justify-content-center">
-            <h2>
-                Pick a Topic   
-            </h2>
-        </div>
-        <div class="d-flex justify-content-center">
-            <select id="measurement-search" class="selectpicker" data-live-search="true" title="choose the measurement you want">
-                <% @topics["values"].each do |each|%>
-                    <option selected="selected"><a><%= link_to each["name"].html_safe, remote: true%></a></option>
-                <%end%>
-            </select>
-        </div>
+        <% if @topics != nil %>
+            <div class="d-flex justify-content-center">
+                <h2>
+                    Pick a Topic   
+                </h2>
+            </div>
+            <div class="d-flex justify-content-center">
+                <select id="measurement-search" class="selectpicker" data-live-search="true" title="choose the measurement you want">
+                    <% @topics["values"].each do |each|%>
+                        <option selected="selected"><a><%= link_to each["name"].html_safe, remote: true%></a></option>
+                    <%end%>
+                </select>
+            </div>
+        <% else %>
+            <div class="text-center">
+                <h1> No logs detected. Please reload the page if a log is sent </h1>
+            </div>
+        <% end %>
     </div>
     <div id="field_list" class="home-content"></div>
     <div id="result" class="home-content"></div>
