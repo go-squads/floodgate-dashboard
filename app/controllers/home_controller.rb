@@ -31,17 +31,39 @@ class HomeController < ApplicationController
   end
 
   def visualize
+    traffic_exist = false
     dbclient = connect_to_influx
     column_names = params[:field].split(",")
     string_select_builder = ''
     column_names.each do |each|
+      if each == "INFO"
+        traffic_exist = true
+      end
+      #query string
       string_select_builder = string_select_builder +','+ 'sum("'+each+'") AS "'+ each + '"' 
     end
     interval = interval_based_on_timerange(params[:timerange])
+    #build the full query string
     cmd = 'SELECT '+string_select_builder[1...string_select_builder.length]+' FROM "analyticsKafkaDB"."autogen"."'+params[:measurement]+'" where time > now() - '+params[:timerange]+' group by time('+interval+') FILL(0)'
+    #query influxdb
     @response = dbclient.query(cmd)
+    puts "this is the response"
+    puts @response
+    # TODO: DO THE SAME FOR WARNING
+    if traffic_exist 
+        create_map_error_threshold(@response)
+        puts "this is after the change"
+        puts @response
+        column_names.push("error_limit")
+    end
     data_to_visualize = map_timeseries(@response)
-
+    # IDEA ATTACH THE VALUES ARR INTO THE VALUES ARRAY
+    # Response example
+    # {"name"=>"go-testerror_logs_Errors", "tags"=>nil, 
+    #     "values"=>[{"time"=>"2018-08-08T20:00:00Z", "200_NO_POST"=>0}, 
+    #         {"time"=>"2018-08-08T21:00:00Z", "200_NO_POST"=>0}, 
+    #         {"time"=>"2018-08-08T22:00:00Z", "200_NO_POST"=>0}, 
+    # I want time but i want to calculate the values -> Remap the values
     if data_to_visualize != nil
       draw_chart(data_to_visualize, column_names)
     end
@@ -49,6 +71,27 @@ class HomeController < ApplicationController
       format.js
     end
   end
+
+  def create_map_error_threshold(info_query_response)
+    error_percentage = 0
+    result_values_hash_array = Array.new()
+    info_query_response[0]["values"].each do |data|
+        time_val_hash = Hash.new()
+        data.each do |label, info_value|
+            puts "the label"
+            puts label
+            if label == "INFO"
+                puts info_value
+                error_percentage = (info_value / 100.0) * 10
+                puts error_percentage
+            end
+        end
+        data.store("error_limit", error_percentage)
+    end
+
+    return
+  end
+
 
   def map_timeseries(query_response)
     if query_response.length != 0 
@@ -88,13 +131,16 @@ class HomeController < ApplicationController
   end
 
   def draw_chart(data_to_visualize, column_names)
+    puts "data_to_vis"
+    puts data_to_visualize
     @chart = LazyHighCharts::HighChart.new('graph') do |f|
       f.title(text: params[:measurement])
       f.xAxis(categories: data_to_visualize["time"])
-      column_names.each {
-        |column_name|
+      column_names.each do |column_name|
+        puts "Column name below:"
+        puts column_name
         f.series(name: column_name, yAxis: 0, data: data_to_visualize[column_name])
-      }
+      end
     
       f.yAxis [
         {title: {text: "count", margin: 70} },
