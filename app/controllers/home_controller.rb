@@ -7,10 +7,12 @@ class HomeController < ApplicationController
 
   def connect_to_influx
     databaseClient = InfluxDB::Client.new(
-        database: Rails.application.config.database_name,
-        username: Rails.application.config.user_name,
-        password: Rails.application.config.password,
-        retry: 4
+      host: ENV["INFLUXDB_HOST"],
+      port: ENV["INFLUXDB_PORT"],
+      database: ENV["INFLUXDB_NAME"],
+      username: ENV["INFLUXDB_USER"],
+      password: ENV["INFLUXDB_PASS"],
+      retry: 4
     )
   end
 
