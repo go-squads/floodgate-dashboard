@@ -17,9 +17,9 @@ class HomeController < ApplicationController
   end
 
   def get_topics
-    dbclient = connect_to_influx()
-    topic_list_query = dbclient.query('show measurements')
-    topic_list = topic_list_query[0]
+      dbclient = connect_to_influx()
+      topic_list_query = dbclient.query('show measurements')
+      topic_list = topic_list_query[0]
   end
 
   def get_fieldset

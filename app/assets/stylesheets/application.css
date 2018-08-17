@@ -29,10 +29,6 @@ footer {
     color: white;
 }
 
-#footer {
-    padding-top : 5%;
-    height: 10%;
-}
 
 .home-content {
     margin: 3% 0;
@@ -40,8 +36,10 @@ footer {
 
 .navbar {
     width: 100%;
+    margin-bottom: 15px;
 }
  
 .visualize-space {
     min-height: 500px;
 }
+

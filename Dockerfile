@@ -5,8 +5,7 @@ RUN apk add --no-cache --update build-base \
                                 linux-headers \
                                 git \
                                 nodejs \
-                                tzdata \
-                                sqlite-dev
+                                tzdata
 
 ENV APP_PATH /usr/src/app
 
@@ -18,6 +17,6 @@ ADD Gemfile.lock $APP_PATH
 RUN bundle install --jobs `expr $(cat /proc/cpuinfo | grep -c "cpu cores") - 1` --retry 3
 
 # Copy the application into the container
-COPY . $APP_PATH
+COPY . $APP_PATHs
 EXPOSE 3000
-CMD bundle install && rails s
+CMD rm -rf tmp && bundle install && rails server
