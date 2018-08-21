@@ -1,5 +1,5 @@
-<div class="container col-md-8">
-  <h3 class="text-center">Topics</h3>
+<div class="container col-md-8 mt-4">
+  <h2 class="ui header text-center">Topics</h2>
   <div class="list-group">
   <% for collection in @db.collection_names %>
     <% name = collection.gsub('_logs','') %>

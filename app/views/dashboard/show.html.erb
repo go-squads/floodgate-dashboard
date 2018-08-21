@@ -1,0 +1,52 @@
+<div class="mt-4">
+  <div class="ui form">
+    <div class="field">
+      <label>Country</label>
+      <select multiple="" class="ui dropdown">
+
+      </select>
+    </div>
+    <div class="field">
+      <label>Country</label>
+      <select multiple="" class="ui dropdown">
+        <option value="">Select Country</option>
+        <option value="AF">Afghanistan</option>
+        <option value="AX">Åland Islands</option>
+        <option value="AL">Albania</option>
+        <option value="DZ">Algeria</option>
+        <option value="AS">American Samoa</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+
+    <script type="text/javascript" charset="utf-8">
+    visualize = new Vue({
+        el: '#visualize',
+        data: {
+            levels: <%= raw(@collection.distinct("level").to_json) %>,
+            methods: <%= raw(@collection.distinct("method")) %>,
+            paths: <%= raw(@collection.distinct("path")) %>,
+            codes: <%= raw(@collection.distinct("code")) %>,
+            state: {level: {}, path: {}, code: {}, method: {}},
+            filter: {level: [], path: [], code: [], method: []}
+        },
+        methods: {
+            onClick: function(item, value) {
+                console.log(item, value)
+                if (!this.state[item][value]) {
+                    this.state[item][value] = true
+                    this.filter[item].push(value)
+                } else {
+                    this.state[item][value] = false;
+                    this.filter[item].splice(value, 1);
+                }
+                this.state.__ob__.dep.notify()
+            },
+            getState: function(item,value) {
+                return this.state[item][value]
+            }
+        }
+    })
+</script>

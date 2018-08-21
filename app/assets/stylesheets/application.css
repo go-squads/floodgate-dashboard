@@ -13,7 +13,6 @@
  *= require_tree .
  *= require_self
  */
-
 body {
     min-height: 100vh;
     position: relative;
@@ -41,5 +40,42 @@ footer {
  
 .visualize-space {
     min-height: 500px;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.mt-0 {
+    margin-top: 0 !important;
+}
+
+.mb-0 {
+    margin-bottom: 0 !important;
+}
+
+.mr-0 {
+    margin-right: 0 !important;
+}
+
+.ml-0 {
+    margin-left: 0 !important;
+}
+
+.ui.menu {
+    border-radius: 0 !important;
+    border:0 !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
 }
 
