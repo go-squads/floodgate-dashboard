@@ -1,51 +1,76 @@
-<div class="mt-4">
-  <div class="ui form">
-    <div class="field">
-      <label>Country</label>
-      <select multiple="" class="ui dropdown">
-
-      </select>
+<div class="mt-4" id="visualize">
+    <div class="ui grid form">
+        <div class="field four wide column">
+          <label>Level</label>
+          <select multiple="" class="ui dropdown" v-model="filter.level">
+            <option value="">All</option>
+            <option v-for="l in levels" v-bind:value="l">{{l}}</option>
+          </select>
+        </div>
+        <div class="field four wide column">
+          <label>Method</label>
+          <select multiple="" class="ui dropdown" v-model="filter.method">
+            <option value="">All</option>
+            <option v-for="m in methods" v-bind:value="m">{{m}}</option>
+          </select>
+        </div>
+        <div class="field four wide column">
+          <label>Path</label>
+          <select multiple="" class="ui dropdown" v-model="filter.path">
+            <option value="">All</option>
+            <option v-for="p in paths" v-bind:value="p">{{p}}</option>
+          </select>
+        </div>
+      <div class="field four wide column">
+        <label>Code</label>
+        <select multiple="" class="ui dropdown" v-model="filter.code">
+          <option value="">All</option>
+          <option v-for="c in codes" v-bind:value="c">{{c}}</option>
+        </select>
+      </div>
     </div>
-    <div class="field">
-      <label>Country</label>
-      <select multiple="" class="ui dropdown">
-        <option value="">Select Country</option>
-        <option value="AF">Afghanistan</option>
-        <option value="AX">Åland Islands</option>
-        <option value="AL">Albania</option>
-        <option value="DZ">Algeria</option>
-        <option value="AS">American Samoa</option>
-      </select>
-    </div>
-  </div>
+  <canvas id="myChart"></canvas>
+</div>
 </div>
 
 
-    <script type="text/javascript" charset="utf-8">
-    visualize = new Vue({
-        el: '#visualize',
-        data: {
-            levels: <%= raw(@collection.distinct("level").to_json) %>,
-            methods: <%= raw(@collection.distinct("method")) %>,
-            paths: <%= raw(@collection.distinct("path")) %>,
-            codes: <%= raw(@collection.distinct("code")) %>,
-            state: {level: {}, path: {}, code: {}, method: {}},
-            filter: {level: [], path: [], code: [], method: []}
-        },
-        methods: {
-            onClick: function(item, value) {
-                console.log(item, value)
-                if (!this.state[item][value]) {
-                    this.state[item][value] = true
-                    this.filter[item].push(value)
-                } else {
-                    this.state[item][value] = false;
-                    this.filter[item].splice(value, 1);
-                }
-                this.state.__ob__.dep.notify()
-            },
-            getState: function(item,value) {
-                return this.state[item][value]
+<script type="text/javascript" charset="utf-8">
+  visualize = new Vue({
+    el: '#visualize',
+    data: {
+      levels: <%= raw(@collection.distinct("level").to_json) %>,
+      methods: <%= raw(@collection.distinct("method")) %>,
+      paths: <%= raw(@collection.distinct("path")) %>,
+      codes: <%= raw(@collection.distinct("code")) %>,
+      filter: {level: [], method: [], code: [], path: []},
+    },
+    methods: {
+      update: function() {
+
+      }
+    }
+  })
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.js"></script>
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data: [{
+            x: new Date(),
+            y: 1
+        }, {
+            t: "2018-02-01T10:10:00Z",
+            y: 100
+        }],
+        options: {
+            scales: {
+                xAxes: [{
+                    time: {
+                        unit: 'time'
+                    }
+                }]
             }
         }
     })
