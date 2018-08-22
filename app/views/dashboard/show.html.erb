@@ -69,7 +69,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.js"></script>
 <script type="text/javascript" charset="utf-8">
-
   var visualize = new Vue({
       el: '#visualize',
       data: {
@@ -81,7 +80,6 @@
           dataPrecision: 'hour',
           viewUnit: 'hour',
           range: 12,
-          result: <%= raw (@collection.aggregate([{'$group' => {_id: {'$dateToString'=> {format: '%Y-%m-%dT%H:%M:%SZ' ,date: {'$dateFromString'=> {dateString: '$timestamp'} } } }, count: {'$sum'=> '$count'}}}, {'$sort' => {'_id': 1}}]).to_json) %>,
       },
       methods: {
           updateViewUnit: function() {
@@ -90,6 +88,12 @@
           updateRange: function() {
               this.chart.options.scales.xAxes[0].time.max = moment().add(3, this.viewUnit+'s').startOf(this.viewUnit)
               this.chart.options.scales.xAxes[0].time.min = moment().subtract(this.range, this.viewUnit+'s').startOf(this.viewUnit)
+          },
+          doAjax: function() {
+              $.post("<%= "/#{params['topic']}/fetch.json" %>", {filter: JSON.stringify(this.filter)},(data, status) => {
+                  this.result = data;
+                  this.updateAll();
+              });
           },
           updateData: function() {
               let dataMap = {};
@@ -108,7 +112,6 @@
               dataMap = ordered;
               keys = Object.keys(dataMap)
               vals = Object.values(dataMap)
-              console.log(keys, vals)
               this.chart.data.labels = keys
               this.chart.data.datasets[0].data = vals
           },
@@ -117,8 +120,7 @@
               this.updateRange();
               this.updateData();
               this.chart.update()
-          }
-
+          },
       },
       watch: {
           viewUnit: function() {
@@ -128,6 +130,10 @@
           range: function() {
               this.updateAll()
           },
+          result: function() {
+              console.log("updated")
+              this.updateAll()
+          }
       }
   });
 
@@ -180,6 +186,9 @@
           },
       }
   };
-  visualize.chart = new Chart(ctx, config);
-  visualize.updateAll()
+  $(document).ready(() => {
+      visualize.chart = new Chart(ctx, config);
+      visualize.doAjax()
+  })
+
 </script>
