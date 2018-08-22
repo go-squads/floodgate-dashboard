@@ -3,28 +3,28 @@
     <div class="ui form row">
         <div class="field col-md-3">
           <label>Level</label>
-          <select multiple="" class="ui dropdown" v-model="filter.level">
+          <select multiple="" class="ui dropdown" v-model="filter.level" v-on:change="doAjax()">
             <option value="">All</option>
             <option v-for="l in levels" v-bind:value="l">{{l}}</option>
           </select>
         </div>
         <div class="field col-md-3">
           <label>Method</label>
-          <select multiple="" class="ui dropdown" v-model="filter.method">
+          <select multiple="" class="ui dropdown" v-model="filter.method" v-on:change="doAjax()">
             <option value="">All</option>
             <option v-for="m in methods" v-bind:value="m">{{m}}</option>
           </select>
         </div>
         <div class="field col-md-3">
           <label>Path</label>
-          <select multiple="" class="ui dropdown" v-model="filter.path">
+          <select multiple="" class="ui dropdown" v-model="filter.path" v-on:change="doAjax()">
             <option value="">All</option>
             <option v-for="p in paths" v-bind:value="p">{{p}}</option>
           </select>
         </div>
       <div class="field col-md-3">
         <label>Code</label>
-        <select multiple="" class="ui dropdown" v-model="filter.code">
+        <select multiple="" class="ui dropdown" v-model="filter.code" v-on:change="doAjax()">
           <option value="">All</option>
           <option v-for="c in codes" v-bind:value="c">{{c}}</option>
         </select>
@@ -90,7 +90,12 @@
               this.chart.options.scales.xAxes[0].time.min = moment().subtract(this.range, this.viewUnit+'s').startOf(this.viewUnit)
           },
           doAjax: function() {
-              $.post("<%= "/#{params['topic']}/fetch.json" %>", {filter: JSON.stringify(this.filter)},(data, status) => {
+              console.log("Do AJAX")
+              var form = {};
+              form.filter = JSON.stringify(this.filter);
+              form.precision = this.dataPrecision;
+              form.bound = JSON.stringify(moment().subtract(this.range, this.viewUnit+'s').startOf(this.viewUnit));
+              $.post("<%= "/#{params['topic']}/fetch.json" %>", form ,(data, status) => {
                   this.result = data;
                   this.updateAll();
               });
@@ -124,15 +129,14 @@
       },
       watch: {
           viewUnit: function() {
-              this.updateAll()
+              this.doAjax()
           },
 
           range: function() {
-              this.updateAll()
+              this.doAjax()
           },
-          result: function() {
-              console.log("updated")
-              this.updateAll()
+          dataPrecision: function() {
+              this.doAjax()
           }
       }
   });
