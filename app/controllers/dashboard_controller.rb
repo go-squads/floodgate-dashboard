@@ -16,11 +16,25 @@ class DashboardController < ApplicationController
     end
   end
 
+  def match_rule(filter, bound)
+    puts ("Building filter with: #{filter}")
+    rule = {}
+    filter.each do |k,v|
+      if v.length > 0
+        rule[k] = {'$in' => v}
+      end
+    end
+    rule['timestamp'] = {'$gte' => bound}
+    return rule
+  end
+
   def fetch
+    print("\n\n\n")
     collection_name = "#{params['topic']}#{'_logs'}"
     @collection = @db[collection_name]
-    filter = JSON.parse(params[:filter])
-    print("Hello World!", filter)
-    @data = @collection.aggregate([{'$group' => {_id: '$timestamp', count: {'$sum' => '$count'}}}])
+    match_rule= match_rule(JSON.parse(params[:filter]), params[:bound])
+    puts("Rule: #{match_rule.to_json}")
+    @data = @collection.aggregate([{'$match'=> match_rule},{'$group' => {_id: '$timestamp', count: {'$sum' => '$count'}}}])
+    print("\n\n\n")
   end
 end
