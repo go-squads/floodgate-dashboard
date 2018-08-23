@@ -17,38 +17,38 @@
 
   <div class="rules mt-4">
     <h4>Rules: </h4>
-    <div class="rules card">
+    <div class="rules card" v-for="r in alerts.length">
       <div class="card-body">
       <div class="form-group row col-md-12 align-items-center">
         <label class="col-md-2">Trigger alert </label>
-        <input type="text" class="form-control col-md-6" placeholder="Alert Name">
+        <input type="text" class="form-control col-md-6" placeholder="Alert Name" v-model="alerts[r-1].name">
         <div class="col-md-3">when data </div>
       </div>
       <div class="ui form row ml-2">
         <div class="field col-md-3">
           <label>Level</label>
-          <select multiple="" class="ui dropdown" v-model="filter.level">
+          <select multiple="" class="ui dropdown" v-model="alerts[r-1].filter.level">
             <option value="">All</option>
             <option v-for="l in levels" v-bind:value="l">{{l}}</option>
           </select>
         </div>
         <div class="field col-md-3">
           <label>Method</label>
-          <select multiple="" class="ui dropdown" v-model="filter.method">
+          <select multiple="" class="ui dropdown" v-model="alerts[r-1].filter.method">
             <option value="">All</option>
             <option v-for="m in methods" v-bind:value="m">{{m}}</option>
           </select>
         </div>
         <div class="field col-md-3">
           <label>Path</label>
-          <select multiple="" class="ui dropdown" v-model="filter.path">
+          <select multiple="" class="ui dropdown" v-model="alerts[r-1].filter.path">
             <option value="">All</option>
             <option v-for="p in paths" v-bind:value="p">{{p}}</option>
           </select>
         </div>
         <div class="field col-md-3">
           <label>Code</label>
-          <select multiple="" class="ui dropdown" v-model="filter.code">
+          <select multiple="" class="ui dropdown" v-model="alerts[r-1].filter.code">
             <option value="">All</option>
             <option v-for="c in codes" v-bind:value="c">{{c}}</option>
           </select>
@@ -59,27 +59,27 @@
           aggregate count
         </div>
         <div class="col-md-3">
-          <select class="ui dropdown" v-model="filter.code">
-            <option value="gt">Greater Than</option>
-            <option value="lt">Less Than</option>
-            <option value="gte">Greater Than/Equal</option>
-            <option value="lte">Less Than/Equal</option>
+          <select class="ui dropdown" v-model="alerts[r-1].comparator">
+            <option value="gt" selected>greater than</option>
+            <option value="lt">less than</option>
+            <option value="gte">greater than/equal</option>
+            <option value="lte">less than/equal</option>
           </select>
         </div>
         <div class="col-md-2">
-          <input type="number" class="form-control">
+          <input type="number" class="form-control" min="1" v-model="alerts[r-1].threshold">
         </div>
         <div class="col-md-3 row align-items-center">
           <span class="col-md-6">in range</span>
-          <input type="number" class="form-control col-md-6">
+          <input type="number" min="1" class="form-control col-md-6" v-model="alerts[r-1].range">
         </div>
         <div class="col-md-2">
           minute.
         </div>
-
       </div>
       </div>
     </div>
+  </div>
   </form>
 </div>
 
@@ -88,12 +88,11 @@
       el: "#alert",
       data: {
           mails: [""],
-          rules: [""],
+          alerts: [{name: "", filter: {level: [], method: [], path: [], code: []}, comparator: "gte", threshold: 5, range: 30}],
           levels: <%= raw(@collection.distinct("level").to_json) %>,
           methods: <%= raw(@collection.distinct("method")) %>,
           paths: <%= raw(@collection.distinct("path")) %>,
           codes: <%= raw(@collection.distinct("code")) %>,
-          filter: {}
 
       },
       methods: {
@@ -101,6 +100,9 @@
               if(this.mails.length > 1) {
                   this.mails.splice(idx, 1)
               }
+          },
+          addRule: function() {
+              this.alerts.push({})
           },
           addMail: function() {
               this.mails.push("")
