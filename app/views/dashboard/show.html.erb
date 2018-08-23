@@ -94,7 +94,7 @@
               var form = {};
               form.filter = JSON.stringify(this.filter);
               form.precision = this.dataPrecision;
-              form.bound = JSON.stringify(moment().subtract(this.range, this.viewUnit+'s').startOf(this.viewUnit));
+              form.bound = moment().subtract(this.range, this.viewUnit+'s').startOf(this.viewUnit).utc().format("YYYY-MM-DDTHH:mm:SSZ");
               $.post("<%= "/#{params['topic']}/fetch.json" %>", form ,(data, status) => {
                   this.result = data;
                   this.updateAll();
