@@ -58,6 +58,10 @@
           <label>Range</label>
           <input type="number" v-model="range">
         </div>
+        <div class="field col-md-3">
+          <label>Offset</label>
+          <input type="number" v-model="offset">
+        </div>
       </div>
   <canvas id="visualize_chart"></canvas>
   <div class="form-group">
@@ -80,21 +84,22 @@
           dataPrecision: 'hour',
           viewUnit: 'hour',
           range: 12,
+          offset: 3,
       },
       methods: {
           updateViewUnit: function() {
               this.chart.options.scales.xAxes[0].time.unit = this.viewUnit;
           },
           updateRange: function() {
-              this.chart.options.scales.xAxes[0].time.max = moment().add(3, this.viewUnit+'s').startOf(this.viewUnit)
-              this.chart.options.scales.xAxes[0].time.min = moment().subtract(this.range, this.viewUnit+'s').startOf(this.viewUnit)
+              this.chart.options.scales.xAxes[0].time.max = moment().add(this.offset, this.viewUnit+'s').startOf(this.viewUnit);
+              this.chart.options.scales.xAxes[0].time.min = moment().subtract(Math.abs(this.offset - this.range), this.viewUnit+'s').startOf(this.viewUnit);
           },
           doAjax: function() {
               console.log("Do AJAX")
               var form = {};
               form.filter = JSON.stringify(this.filter);
               form.precision = this.dataPrecision;
-              form.bound = moment().subtract(this.range, this.viewUnit+'s').startOf(this.viewUnit).utc().format("YYYY-MM-DDTHH:mm:SSZ");
+              form.bound = moment().subtract(Math.abs(this.offset - this.range ), this.viewUnit+'s').startOf(this.viewUnit).utc().format("YYYY-MM-DDTHH:mm:SSZ");
               $.post("<%= "/#{params['topic']}/fetch.json" %>", form ,(data, status) => {
                   this.result = data;
                   this.updateAll();
@@ -102,8 +107,8 @@
           },
           updateData: function() {
               let dataMap = {};
-              let start = moment().subtract(this.range, this.viewUnit+'s').startOf(this.viewUnit)
-              while (start.isSameOrBefore(moment())) {
+              let start = moment().subtract(Math.abs(this.offset - this.range), this.viewUnit+'s').startOf(this.viewUnit)
+              while (start.isBefore(moment().startOf(this.viewUnit))) {
                   dataMap[start.format("YYYY-MM-DDTHH:mm:SSZ")]= 0;
                   start.add(1, this.dataPrecision+'s')
               }
@@ -137,6 +142,9 @@
           },
           dataPrecision: function() {
               this.doAjax()
+          },
+          offset: function() {
+              this.doAjax()
           }
       }
   });
@@ -147,7 +155,6 @@
       data: {
           labels: [],
           datasets: [{
-              lineTension: 0,
               spanGaps: false,
               label: 'Data',
               data: [],
@@ -155,7 +162,6 @@
               borderColor: 'rgba(34,204,10,1)',
               fillColor: 'rgba(34,204,10,0.2)',
               fill: false,
-
           }]
       },
       options: {
@@ -190,9 +196,17 @@
           },
       }
   };
+
+  function startJob() {
+      let interval = setInterval(()=> {
+          visualize.doAjax();
+      }, 60000)
+  }
+
   $(document).ready(() => {
       visualize.chart = new Chart(ctx, config);
       visualize.doAjax()
+      startJob()
   })
 
 </script>
