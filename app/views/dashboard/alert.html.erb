@@ -1,0 +1,110 @@
+<div class="container" id="alert">
+  <form action="">
+  <h3 class="text-center mt-4"><%= params['topic'] %> Alerts</h3>
+  <div class="alert-to">
+    <h4>Mail To: </h4>
+    <div class="mail-to">
+
+        <div class="form-group row" v-for="i in mails.length">
+          <div class="col-md-4">
+            <input type="email" class="form-control" v-model="mails[i-1] " placeholder="Mail Address">
+          </div>
+          <button class="btn btn-danger" type="button" v-on:click="deleteMail(i-1)" v-if="mails.length > 1">Delete</button>
+        </div>
+        <button class="btn btn-primary" v-on:click="addMail()" type="button">Add</button>
+    </div>
+  </div>
+
+  <div class="rules mt-4">
+    <h4>Rules: </h4>
+    <div class="rules card">
+      <div class="card-body">
+      <div class="form-group row col-md-12 align-items-center">
+        <label class="col-md-2">Trigger alert </label>
+        <input type="text" class="form-control col-md-6" placeholder="Alert Name">
+        <div class="col-md-3">when data </div>
+      </div>
+      <div class="ui form row ml-2">
+        <div class="field col-md-3">
+          <label>Level</label>
+          <select multiple="" class="ui dropdown" v-model="filter.level">
+            <option value="">All</option>
+            <option v-for="l in levels" v-bind:value="l">{{l}}</option>
+          </select>
+        </div>
+        <div class="field col-md-3">
+          <label>Method</label>
+          <select multiple="" class="ui dropdown" v-model="filter.method">
+            <option value="">All</option>
+            <option v-for="m in methods" v-bind:value="m">{{m}}</option>
+          </select>
+        </div>
+        <div class="field col-md-3">
+          <label>Path</label>
+          <select multiple="" class="ui dropdown" v-model="filter.path">
+            <option value="">All</option>
+            <option v-for="p in paths" v-bind:value="p">{{p}}</option>
+          </select>
+        </div>
+        <div class="field col-md-3">
+          <label>Code</label>
+          <select multiple="" class="ui dropdown" v-model="filter.code">
+            <option value="">All</option>
+            <option v-for="c in codes" v-bind:value="c">{{c}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row ml-2 align-items-center">
+        <div class="col-md-2">
+          aggregate count
+        </div>
+        <div class="col-md-3">
+          <select class="ui dropdown" v-model="filter.code">
+            <option value="gt">Greater Than</option>
+            <option value="lt">Less Than</option>
+            <option value="gte">Greater Than/Equal</option>
+            <option value="lte">Less Than/Equal</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <input type="number" class="form-control">
+        </div>
+        <div class="col-md-3 row align-items-center">
+          <span class="col-md-6">in range</span>
+          <input type="number" class="form-control col-md-6">
+        </div>
+        <div class="col-md-2">
+          minute.
+        </div>
+
+      </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+  alertApp = new Vue({
+      el: "#alert",
+      data: {
+          mails: [""],
+          rules: [""],
+          levels: <%= raw(@collection.distinct("level").to_json) %>,
+          methods: <%= raw(@collection.distinct("method")) %>,
+          paths: <%= raw(@collection.distinct("path")) %>,
+          codes: <%= raw(@collection.distinct("code")) %>,
+          filter: {}
+
+      },
+      methods: {
+          deleteMail: function(idx) {
+              if(this.mails.length > 1) {
+                  this.mails.splice(idx, 1)
+              }
+          },
+          addMail: function() {
+              this.mails.push("")
+          }
+      }
+  })
+</script>

@@ -46,4 +46,9 @@ class DashboardController < ApplicationController
     @data = @collection.aggregate([{'$match'=> match_rule},{'$group' => group_rule}, {'$sort'=> {'_id': 1}}])
     print("\n\n\n")
   end
+
+  def alert
+    collection_name = "#{params['topic']}#{'_logs'}"
+    @collection = @db[collection_name]
+  end
 end

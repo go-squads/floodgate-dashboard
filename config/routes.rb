@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   get ':topic' => 'dashboard#show'
 
   post ':topic/fetch' => 'dashboard#fetch'
+  get ':topic/alert' => 'dashboard#alert'
   # get ':measurement/fieldset' => 'dashboard#show'
 
   # get 'home/visualize'
