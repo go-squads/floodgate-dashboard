@@ -1,0 +1,96 @@
+<div class="container" id="alert">
+  <h3 class="text-center mt-4"><%= params['topic'] %> Alerts</h3>
+  <% if @res %>
+  <div class="alert-to">
+      <h4>Mail To: </h4>
+      <div class="mail-to">
+        <% for mail in @res.fetch('mails') %>
+        <div class="form-group row">
+
+          <div class="col-md-4">
+            <input type="email" class="form-control" value="<%= mail %>" disabled>
+          </div>
+        </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="rules mt-4">
+      <h4>Rules: </h4>
+      <% for rule in @res.fetch('rules') %>
+      <div class="rules card">
+        <div class="card-body">
+          <div class="form-group row col-md-12 align-items-center">
+            <label class="col-md-2">Trigger alert </label>
+            <input type="text" class="form-control col-md-6" value="<%= rule['name']%>" disabled>
+            <div class="col-md-3">when data </div>
+          </div>
+          <div class="ui form row ml-2">
+            <div class="field col-md-3">
+              <label>Level</label>
+              <select multiple="" class="ui dropdown" disabled >
+                <option value="">All</option>
+                <% for x in rule['filter']['level'] %>
+                  <option selected><%= x %></option>
+                <% end %>
+              </select>
+            </div>
+            <div class="field col-md-3">
+              <label>Method</label>
+              <select multiple="" class="ui dropdown" disabled>
+                <% for x in rule['filter']['method'] %>
+                  <option selected><%= x %></option>
+                <% end %>
+              </select>
+            </div>
+            <div class="field col-md-3">
+              <label>Path</label>
+              <select multiple="" class="ui dropdown" disabled>
+                <% for x in rule['filter']['path'] %>
+                  <option selected><%= x %></option>
+                <% end %>
+              </select>
+            </div>
+            <div class="field col-md-3">
+              <label>Code</label>
+              <select multiple="" class="ui dropdown" disabled>
+              <% for x in rule['filter']['code'] %>
+                <option selected><%= x %></option>
+              <% end %>
+              </select>
+            </div>
+          </div>
+          <div class="row ml-2 align-items-center">
+            <div class="col-md-2">
+              aggregate count
+            </div>
+            <div class="col-md-3">
+              <select class="ui dropdown" disabled value="<%= rule['comparator'] %>">
+                <option value="gte">greater than/equal</option>
+                <option value="lte">lower than/equal</option>
+                <option value="gt">greater than</option>
+                <option value="lt">lower than</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <input type="number" class="form-control" value="<%= rule['threshold'] %>" disabled>
+            </div>
+            <div class="col-md-3 row align-items-center">
+              <span class="col-md-6">in range</span>
+              <input type="number" min="1" class="form-control col-md-6" value="<%= rule['range'] %>" disabled>
+            </div>
+            <div class="col-md-2">
+              minute.
+            </div>
+          </div>
+        </div>
+      </div>
+        <% end %>
+    </div>
+    <% else %>
+      <div class="alert alert-warning row justify-content-center">No data</div>
+    <% end %>
+    <div class="row justify-content-center">
+      <a class="btn btn-success" href="alert/edit">Edit</a>
+    </div>
+</div>

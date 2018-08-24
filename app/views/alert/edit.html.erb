@@ -1,5 +1,6 @@
 <div class="container" id="alert">
   <form action="" method="post">
+    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
     <input type="hidden" name="mailto_addresses" v-model="JSON.stringify(mails)">
     <input type="hidden" name="rules" v-model="JSON.stringify(rules)">
   <h3 class="text-center mt-4"><%= params['topic'] %> Alerts</h3>
@@ -97,8 +98,8 @@
   alertApp = new Vue({
       el: "#alert",
       data: {
-          mails: [""],
-          rules: [{name: "", filter: {level: [], method: [], path: [], code: []}, comparator: "gte", threshold: 5, range: 30}],
+          mails: <%= raw(@res ? @res['mails'].to_json : [""])%>,
+          rules: <%= raw(@res ? @res['rules'].to_json : [{name: "", filter: {level: [], method: [], path: [], code: []}, comparator: "gte", threshold: 5, range: 30}].to_json)%>,
           levels: <%= raw(@collection.distinct("level").to_json) %>,
           methods: <%= raw(@collection.distinct("method")) %>,
           paths: <%= raw(@collection.distinct("path")) %>,
