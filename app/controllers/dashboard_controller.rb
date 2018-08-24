@@ -47,8 +47,5 @@ class DashboardController < ApplicationController
     print("\n\n\n")
   end
 
-  def alert
-    collection_name = "#{params['topic']}#{'_logs'}"
-    @collection = @db[collection_name]
-  end
+
 end
