@@ -1,13 +1,14 @@
 <div class="container" id="alert">
-  <form action="">
+  <form action="" method="post">
+    <input type="hidden" name="mailto_addresses" v-model="JSON.stringify(mails)">
+    <input type="hidden" name="rules" v-model="JSON.stringify(rules)">
   <h3 class="text-center mt-4"><%= params['topic'] %> Alerts</h3>
   <div class="alert-to">
     <h4>Mail To: </h4>
     <div class="mail-to">
-
         <div class="form-group row" v-for="i in mails.length">
           <div class="col-md-4">
-            <input type="email" class="form-control" v-model="mails[i-1] " placeholder="Mail Address">
+            <input type="email" class="form-control" v-model="mails[i-1] " placeholder="Mail Address" required>
           </div>
           <button class="btn btn-danger" type="button" v-on:click="deleteMail(i-1)" v-if="mails.length > 1">Delete</button>
         </div>
@@ -17,38 +18,38 @@
 
   <div class="rules mt-4">
     <h4>Rules: </h4>
-    <div class="rules card" v-for="r in alerts.length">
+    <div class="rules card" v-for="r in rules.length">
       <div class="card-body">
       <div class="form-group row col-md-12 align-items-center">
         <label class="col-md-2">Trigger alert </label>
-        <input type="text" class="form-control col-md-6" placeholder="Alert Name" v-model="alerts[r-1].name">
+        <input type="text" class="form-control col-md-6" placeholder="Alert Name" v-model="rules[r-1].name" required>
         <div class="col-md-3">when data </div>
       </div>
       <div class="ui form row ml-2">
         <div class="field col-md-3">
           <label>Level</label>
-          <select multiple="" class="ui dropdown" v-model="alerts[r-1].filter.level">
+          <select multiple="" class="ui dropdown" v-model="rules[r-1].filter.level">
             <option value="">All</option>
             <option v-for="l in levels" v-bind:value="l">{{l}}</option>
           </select>
         </div>
         <div class="field col-md-3">
           <label>Method</label>
-          <select multiple="" class="ui dropdown" v-model="alerts[r-1].filter.method">
+          <select multiple="" class="ui dropdown" v-model="rules[r-1].filter.method" >
             <option value="">All</option>
             <option v-for="m in methods" v-bind:value="m">{{m}}</option>
           </select>
         </div>
         <div class="field col-md-3">
           <label>Path</label>
-          <select multiple="" class="ui dropdown" v-model="alerts[r-1].filter.path">
+          <select multiple="" class="ui dropdown" v-model="rules[r-1].filter.path">
             <option value="">All</option>
             <option v-for="p in paths" v-bind:value="p">{{p}}</option>
           </select>
         </div>
         <div class="field col-md-3">
           <label>Code</label>
-          <select multiple="" class="ui dropdown" v-model="alerts[r-1].filter.code">
+          <select multiple="" class="ui dropdown" v-model="rules[r-1].filter.code">
             <option value="">All</option>
             <option v-for="c in codes" v-bind:value="c">{{c}}</option>
           </select>
@@ -59,7 +60,7 @@
           aggregate count
         </div>
         <div class="col-md-3">
-          <select class="ui dropdown" v-model="alerts[r-1].comparator">
+          <select class="ui dropdown" v-model="rules[r-1].comparator" required>
             <option value="gt" selected>greater than</option>
             <option value="lt">less than</option>
             <option value="gte">greater than/equal</option>
@@ -67,19 +68,28 @@
           </select>
         </div>
         <div class="col-md-2">
-          <input type="number" class="form-control" min="1" v-model="alerts[r-1].threshold">
+          <input type="number" class="form-control" min="1" v-model="rules[r-1].threshold" required>
         </div>
         <div class="col-md-3 row align-items-center">
           <span class="col-md-6">in range</span>
-          <input type="number" min="1" class="form-control col-md-6" v-model="alerts[r-1].range">
+          <input type="number" min="1" class="form-control col-md-6" v-model="rules[r-1].range" required>
         </div>
         <div class="col-md-2">
           minute.
         </div>
       </div>
       </div>
+      <div class="card-footer d-flex justify-content-end" v-if="rules.length > 1">
+          <button class="btn btn-danger" type="button" v-on:click="deleteRule(r-1)">Delete</button>
+      </div>
     </div>
+    <button type="button" class="btn btn-primary" v-on:click="addRule()">
+      Add
+    </button>
   </div>
+    <div class="row justify-content-center">
+      <button class="btn btn-success">Save</button>
+    </div>
   </form>
 </div>
 
@@ -88,7 +98,7 @@
       el: "#alert",
       data: {
           mails: [""],
-          alerts: [{name: "", filter: {level: [], method: [], path: [], code: []}, comparator: "gte", threshold: 5, range: 30}],
+          rules: [{name: "", filter: {level: [], method: [], path: [], code: []}, comparator: "gte", threshold: 5, range: 30}],
           levels: <%= raw(@collection.distinct("level").to_json) %>,
           methods: <%= raw(@collection.distinct("method")) %>,
           paths: <%= raw(@collection.distinct("path")) %>,
@@ -102,10 +112,20 @@
               }
           },
           addRule: function() {
-              this.alerts.push({})
+              this.rules.push({name: "", filter: {level: [], method: [], path: [], code: []}, comparator: "gte", threshold: 5, range: 30})
+              setTimeout(function() {
+                  $('select.dropdown')
+                      .dropdown()
+                  ;
+              },1)
           },
           addMail: function() {
               this.mails.push("")
+          },
+          deleteRule: function(idx) {
+              if(this.rules.length > 1) {
+                  this.rules.splice(idx, 1)
+              }
           }
       }
   })
