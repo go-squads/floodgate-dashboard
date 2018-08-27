@@ -1,5 +1,6 @@
 class DashboardController < ApplicationController
   require 'mongo'
+  require 'matrix'
   before_action :connect_to_db
   skip_before_action :verify_authenticity_token
   TIMESTAMP_PRECISION= {
@@ -47,5 +48,21 @@ class DashboardController < ApplicationController
     print("\n\n\n")
   end
 
+  def linear_regress x, y
+    x_data = x.map { |xi| (0..1).map { |pow| (xi**pow).to_r } }
+    mx = Matrix[*x_data]
+    my = Matrix.column_vector(y)
+    return ((mx.t * mx).inv * mx.t * my).transpose.to_a[0].map(&:to_f)
+  end
+  
+  def predict coefficients, data_point
+    degree = 0
+    result = 0
+    for coefficient in coefficients
+      result = result + coefficient*(data_point**degree)
+      degree = degree +1
+    end
+    return result
+  end
 
 end
