@@ -46,17 +46,7 @@ class DashboardController < ApplicationController
     puts("Precision Format: #{params['precision']} => #{time_format}")
     group_rule =  {_id: {'$dateToString'=> {format: time_format, date: {'$dateFromString' => {dateString: '$timestamp'}}}}, count: {'$sum' => '$count'}}
     @data = @collection.aggregate([{'$match'=> match_rule},{'$group' => group_rule}, {'$sort'=> {'_id': 1}}])
-    print("\n\n\n")
-    @y_values = []
-    @x_values = []
-    i = 0
-    @data.each do |k|
-      @x_values.append(i)
-      @y_values.append(k["count"])
-      i+=1
-    end
-    coefficients = linear_regress(@x_values, @y_values)
-
+  
     print("\n\n\n")
   end
 

@@ -118,12 +118,21 @@
             body.n = this.offset
             $.post("<%= "/#{params['topic']}/predict.json" %>", body ,(data, status) => {
                   console.log(data)
+                  latest = moment().startOf(this.dataPrecision);
+                  this.chart.data.datasets[1].data = []
+                  idx  = this.chart.data.datasets[0].data.length-1
+                  this.chart.data.datasets[1].data[idx] = this.chart.data.datasets[0].data[idx] 
+                  for(let i=0;i<this.offset;i++) {
+                    this.chart.data.labels.push(latest.add(i+1,this.dataPrecision+'s').format("YYYY-MM-DDTHH:mm:SSZ"));
+                    this.chart.data.datasets[1].data[i+this.chart.data.datasets[0].data.length] = data[i]
+                  }
+                  this.chart.update()
             });
           },
           updateData: function() {
               let dataMap = {};
               let start = moment().subtract(Math.abs(this.offset - this.range), this.viewUnit+'s').startOf(this.viewUnit)
-              while (start.isBefore(moment().startOf(this.viewUnit))) {
+              while (start.isSameOrBefore(moment().startOf(this.viewUnit))) {
                   dataMap[start.format("YYYY-MM-DDTHH:mm:SSZ")]= 0;
                   start.add(1, this.dataPrecision+'s')
               }
