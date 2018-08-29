@@ -99,10 +99,6 @@ Rails.application.configure do
       :enable_starttls_auto => true
   }
 
-<<<<<<< HEAD
-
-=======
-g
 >>>>>>> 7c841d15953e9bfccd46800d685dd369e21b0d7d
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
