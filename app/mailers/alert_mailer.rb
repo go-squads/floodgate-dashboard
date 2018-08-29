@@ -1,0 +1,3 @@
+class AlertMailer < ApplicationMailer
+
+end
