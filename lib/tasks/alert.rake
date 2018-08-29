@@ -5,6 +5,7 @@ namespace :alert do
   desc "Check all alert in database and send notification"
   task alert: :environment do
     print("\n\n\n")
+
     connect_to_db()
     alerts = @db["alerts"].find({})
     # print(alerts.to_json)
@@ -21,6 +22,9 @@ namespace :alert do
           count = @data.first["count"]
           if check_threshold(r["threshold"],count, r["comparator"])
             puts("#{r["name"]} off the bound")
+            obj["mails"].each do |mail|
+              send_alert(mail, r["name"], topic)
+            end
           else
             puts("#{r["name"]} still inside bound")
           end

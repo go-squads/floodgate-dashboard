@@ -42,4 +42,8 @@ module ApplicationHelper
         return (count < threshold)
       end
   end
+  def send_alert(mailto, alert_name, topic)
+    puts("Sending Alert to #{mailto} for #{alert_name} in topic #{topic}")
+    AlertMailer.alert(mailto, alert_name, topic).deliver_now()
+  end
 end
