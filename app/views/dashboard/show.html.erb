@@ -108,7 +108,17 @@
               $.post("<%= "/#{params['topic']}/fetch.json" %>", form ,(data, status) => {
                   this.result = data;
                   this.updateAll();
+                  this.fetchPrediction();
+                  console.log(visualize.chart.data.datasets[0].data)
               });
+          },
+          fetchPrediction: function() {
+            var body = {};
+            body.data = this.chart.data.datasets[0].data;
+            body.n = this.offset
+            $.post("<%= "/#{params['topic']}/predict.json" %>", body ,(data, status) => {
+                  console.log(data)
+            });
           },
           updateData: function() {
               let dataMap = {};
@@ -166,6 +176,15 @@
               borderWidth: 1,
               borderColor: 'rgba(34,204,10,1)',
               fillColor: 'rgba(34,204,10,0.2)',
+              fill: false,
+          },
+          {
+              spanGaps: false,
+              label: 'Prediction',
+              data: [],
+              borderWidth: 1,
+              borderColor: 'rgba(255, 99, 132, 1)',
+              fillColor:  'rgba(255,99,132,0.2)',
               fill: false,
           }]
       },

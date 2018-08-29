@@ -1,6 +1,7 @@
 class DashboardController < ApplicationController
   require 'mongo'
   require 'matrix'
+  require 'json'
   before_action :connect_to_db
   skip_before_action :verify_authenticity_token
   TIMESTAMP_PRECISION= {
@@ -46,6 +47,17 @@ class DashboardController < ApplicationController
     group_rule =  {_id: {'$dateToString'=> {format: time_format, date: {'$dateFromString' => {dateString: '$timestamp'}}}}, count: {'$sum' => '$count'}}
     @data = @collection.aggregate([{'$match'=> match_rule},{'$group' => group_rule}, {'$sort'=> {'_id': 1}}])
     print("\n\n\n")
+    @y_values = []
+    @x_values = []
+    i = 0
+    @data.each do |k|
+      @x_values.append(i)
+      @y_values.append(k["count"])
+      i+=1
+    end
+    coefficients = linear_regress(@x_values, @y_values)
+
+    print("\n\n\n")
   end
 
   def linear_regress x, y
@@ -55,14 +67,32 @@ class DashboardController < ApplicationController
     return ((mx.t * mx).inv * mx.t * my).transpose.to_a[0].map(&:to_f)
   end
   
-  def predict coefficients, data_point
+  def predict coefficients, x
     degree = 0
     result = 0
     for coefficient in coefficients
-      result = result + coefficient*(data_point**degree)
+      result = result + coefficient*(x**degree)
       degree = degree +1
     end
     return result
   end
+
+  def fetch_prediction 
+    print("\n\n\n")
+    data = params[:data]
+    n = params[:n].to_i
+    x = []
+    for i in 0...data.length do
+      x << i
+      data[i] = data[i].to_i
+    end
+    model = linear_regress(x, data)
+    @result = []
+    for j in data.length...data.length+n do 
+      @result << predict(model,j)
+    end
+    print("\n\n\n")
+  end
+
 
 end

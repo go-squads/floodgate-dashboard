@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get ':topic/alert' => 'alert#index'
   get ':topic/alert/edit' => 'alert#edit'
   post ':topic/alert/edit' => 'alert#store'
+  post ':topic/predict' => 'dashboard#fetch_prediction'
   # get ':measurement/fieldset' => 'dashboard#show'
 
   # get 'home/visualize'
